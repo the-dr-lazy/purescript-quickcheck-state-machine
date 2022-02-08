@@ -13,7 +13,7 @@ template-paths:
   - .headroom-templates
 
 variables:
-  project: Monarch
+  project: Purescript QuickCheck State Machine
   year: "2020"
   maintainer_name: Mohammad Hasani
   maintainer_email: the-dr-lazy@pm.me

@@ -24,8 +24,8 @@ epush = liftEffect <<< push
 
 epop :: Aff (Maybe Int)
 epop = do
-  l <- liftEffect pop
-  liftEffect $ pure (if (Array.length l == 0) then Nothing else (Array.(!!) l 0))
+    l <- liftEffect pop
+    liftEffect $ pure (if (Array.length l == 0) then Nothing else (Array.(!!) l 0))
 
 elng :: Aff Int
 elng = liftEffect lng

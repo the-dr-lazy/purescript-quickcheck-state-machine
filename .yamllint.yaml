@@ -1,8 +1,8 @@
 extend: default
 
 rules:
-    line-length:
-        max: 80
-        level: warning
+  line-length:
+    max: 80
+    level: warning
 
-    document-start: disable
+  document-start: disable
