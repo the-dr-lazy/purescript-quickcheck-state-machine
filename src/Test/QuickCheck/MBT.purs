@@ -78,25 +78,16 @@ runStateMachineOnce
     :: forall m model command result failure success
      . Monad m
     => Monoid success
-    => (Int -> m Unit)
-    -> -- setup
-    (Int -> m Unit)
-    -> -- teardown
-    (model -> m Unit)
-    -> -- initializer
-    (model -> command -> (Tuple model result))
-    -> -- mock
-    (command -> m result)
-    -> -- system under test
-    (command -> result -> result -> Outcome failure success)
-    -> -- postcondition
-    Int
-    -> -- initializer
-    model
-    -> -- initial model
-    List command
-    -> -- command list
-    m (Result model command result failure success)
+    => (Int -> m Unit) -- ^ setup
+    -> (Int -> m Unit) -- ^ teardown
+    -> (model -> m Unit) -- ^ initializer
+    -> (model -> command -> (Tuple model result)) -- ^ mock
+    -> (command -> m result) -- ^ system under test
+    -> (command -> result -> result -> Outcome failure success) -- ^ postcondition
+    -> Int -- ^ initializer
+    -> model -- ^ initial model
+    -> List command -- ^ command list
+    -> m (Result model command result failure success)
 runStateMachineOnce setup teardown initializer mock sut postcondition initialValue model commands = do
     setup initialValue
     initializer model
@@ -134,23 +125,15 @@ shrink
     :: forall m model command result failure success
      . Monad m
     => Monoid success
-    => (Int -> m Unit)
-    -> -- setup
-    (Int -> m Unit)
-    -> -- teardown
-    (model -> m Unit)
-    -> -- initializer
-    ((List command) -> (List (List command)))
-    -> -- shrinker
-    (model -> command -> (Tuple model result))
-    -> -- mock
-    (command -> m result)
-    -> -- system under test
-    (command -> result -> result -> Outcome failure success)
-    -> -- postcondition
-    (Result model command result failure success)
-    -> -- inc
-    m (Result model command result failure success)
+    => (Int -> m Unit) -- ^ setup
+    -> (Int -> m Unit) -- ^ teardown
+    -> (model -> m Unit) -- ^ initializer
+    -> ((List command) -> (List (List command))) -- ^ shrinker
+    -> (model -> command -> (Tuple model result)) -- ^ mock
+    -> (command -> m result) -- ^ system under test
+    -> (command -> result -> result -> Outcome failure success) -- ^ postcondition
+    -> (Result model command result failure success) -- ^ inc
+    -> m (Result model command result failure success)
 shrink setup teardown initializer shrinker mock sut postcondition incoming = do
     res <-
         sequence
