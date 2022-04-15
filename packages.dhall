@@ -122,6 +122,59 @@ let upstream =
 
 let overrides = {=}
 
-let additions = {=}
+let additions =
+      { typeable =
+        { name = "typeable"
+        , dependencies =
+          [ "arrays"
+          , "const"
+          , "control"
+          , "either"
+          , "exists"
+          , "foldable-traversable"
+          , "identity"
+          , "leibniz"
+          , "maybe"
+          , "newtype"
+          , "prelude"
+          , "psci-support"
+          , "tuples"
+          , "unsafe-coerce"
+          ]
+        , sources = [ "src/**/*.purs" ]
+        , repo = "https://github.com/ajnsit/purescript-typeable.git"
+        , version = "836a3e10da7a85636ef629ae8e927a5429606b56"
+        }
+      , debugged =
+        { name = "debugged"
+        , dependencies =
+          [ "arrays"
+          , "bifunctors"
+          , "console"
+          , "datetime"
+          , "effect"
+          , "either"
+          , "enums"
+          , "exceptions"
+          , "foldable-traversable"
+          , "foreign-object"
+          , "lists"
+          , "math"
+          , "maybe"
+          , "newtype"
+          , "ordered-collections"
+          , "partial"
+          , "prelude"
+          , "psci-support"
+          , "record"
+          , "strings"
+          , "tuples"
+          , "variant"
+          ]
+        , sources = [ "src/**/*.purs" ]
+        , repo = "https://github.com/davezuch/purescript-debugged.git"
+        , version = "a69dcc14672b699db0a4d320348cd3f5c8afa344"
+        }
+      }
 
 in  upstream // overrides // additions
