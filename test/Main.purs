@@ -4,30 +4,24 @@ import Prelude
 
 import Control.Monad.Error.Class (throwError)
 import Control.Monad.Gen as Gen
-import Data.Array (fromFoldable)
 import Data.Debug (class Debug, debug, genericDebug)
-import Data.Either (Either(..))
 import Data.Functor.Barbie as Barbie
 import Data.Generic.Rep (class Generic)
-import Data.List (List(..), (:), unsnoc, length, toUnfoldable, mapWithIndex, deleteAt, filter)
+import Data.List (List)
 import Data.List as List
-import Data.Maybe (Maybe(..), fromMaybe, isJust, maybe)
-import Data.NonEmpty (NonEmpty(..))
-import Data.Tuple (Tuple(..))
-import Debug (trace, traceM)
+import Data.Maybe (Maybe(..), fromMaybe)
 import Effect (Effect)
 import Effect.Aff (Aff, error, launchAff_)
-import Queue (einit, elng, epop, epush, esetup, eteardown)
-import Test.QuickCheck (class Arbitrary, Result(..), arbitrary)
-import Test.QuickCheck.Gen (Gen, oneOf)
-import Test.QuickCheck.MBT (Outcome(..), testModel)
-import Test.QuickCheck.StateMachine.Sequential (Concrete(..), Failure(..), Mock(..), StateMachine, Symbolic(..), forAll, runActions)
+import Queue (einit, elng, epop, epush, esetup)
+import Test.QuickCheck (Result(..), arbitrary)
+import Test.QuickCheck.Gen (Gen)
+import Test.QuickCheck.StateMachine.Sequential (Concrete, Failure(..), Mock, StateMachine, Symbolic, forAll, runActions)
 import Test.Spec (describe, it)
-import Test.Spec.Assertions (shouldEqual)
 import Test.Spec.Reporter.Console (consoleReporter)
 import Test.Spec.Runner (runSpec)
 
 -- First, we create a model that represents the system under test
+newtype Model :: forall k. k -> Type
 newtype Model r = Model (List Int)
 
 instance Debug (Model r) where
@@ -36,6 +30,7 @@ instance Debug (Model r) where
 -- This represents a command in stateful testing
 -- Here, because we are simulating a FIFO queue
 -- we use the three commands push, pop, and length
+data Command :: forall k. k -> Type
 data Command r = Push Int | Pop | GetLength
 
 instance Barbie.Functor Command where
@@ -59,6 +54,7 @@ instance Debug (Command r) where
 -- Note that while Responses map 1-to-1 to commands, this is
 -- not necessary for the general algorithm to work.
 -- However, IMO, a 1-to-1 mapping makes things more readable.
+data Response :: forall k. k -> Type
 data Response r = Pushed | Popped (Maybe Int) | Length Int
 
 instance Barbie.Functor Response where
@@ -93,8 +89,7 @@ mock model command = case command, model of
     GetLength, (Model xs) -> pure $ Length (List.length xs)
 
 precondition :: Model Symbolic -> Command Symbolic -> Boolean
-precondition (Model (List.Nil)) _ = true
-precondition (Model (List.Cons _ _)) _ = false
+precondition _ _ = true
 
 generator :: Model Symbolic -> Maybe (Gen (Command Symbolic))
 generator model = Just $ (Push <$> arbitrary) `Gen.choose` (pure Pop) `Gen.choose` (pure GetLength)
